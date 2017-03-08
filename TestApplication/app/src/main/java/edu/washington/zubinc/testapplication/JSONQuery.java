@@ -30,7 +30,7 @@ public class JSONQuery extends AsyncTask{
         Log.d("Constructor", "in here!");
         this.ingredients = ingredients;
         this.url = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/findByIngredients?fillIngredients=false&ingredients=";
-        this.dishes = new ArrayList<>();
+        this.dishes = new ArrayList<Dish>(5);
     }
 
     public void setUrl(){
@@ -55,7 +55,7 @@ public class JSONQuery extends AsyncTask{
             int id = dish.getInt("id");
             String title = dish.getString("title");
             String image = dish.getString("image");
-            this.dishes.add(new Dish(id, title, image));
+            this.dishes.add(i, new Dish(id, title, image));
         }
     }
 
@@ -69,8 +69,10 @@ public class JSONQuery extends AsyncTask{
                     .header("Accept", "application/json")
                     .asJson();
             this.jsonArray = response.getBody().getArray();
-            Log.d("TAG", this.jsonArray.toString());
+            this.addDishes();
         } catch (UnirestException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
             e.printStackTrace();
         }
 
@@ -79,36 +81,6 @@ public class JSONQuery extends AsyncTask{
 
     @Override
     protected void onPostExecute(Object o) {
-        try {
-            this.addDishes();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private class Dish{
-
-        private int id;
-        private String title;
-        private String image;
-
-        public Dish(int id, String title, String image){
-            this.id = id;
-            this.title = title;
-            this.image = image;
-        }
-
-        public int getID(){
-            return this.id;
-        }
-
-        public String getTitle(){
-            return this.title;
-        }
-
-        public String getImage(){
-            return this.image;
-        }
 
     }
 
